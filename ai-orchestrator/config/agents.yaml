@@ -1,0 +1,32 @@
+# Agent Configuration
+
+agents:
+  - id: "00000000-0000-0000-0000-000000000001"
+    name: "Alice"
+    personality:
+      openness: 0.7
+      conscientiousness: 0.6
+      extraversion: 0.5
+      agreeableness: 0.8
+      neuroticism: 0.4
+      
+  - id: "00000000-0000-0000-0000-000000000002"
+    name: "Bob"
+    personality:
+      openness: 0.6
+      conscientiousness: 0.7
+      extraversion: 0.6
+      agreeableness: 0.7
+      neuroticism: 0.5
+
+# Memory settings
+memory:
+  working_memory_size: 10
+  short_term_memory_size: 100
+  importance_threshold: 0.7
+  
+# AI settings
+ai:
+  model: "claude-3-5-sonnet-20241022"
+  max_tokens: 300
+  temperature: 0.7

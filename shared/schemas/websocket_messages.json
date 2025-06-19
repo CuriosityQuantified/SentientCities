@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "AgentUpdate": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "agent_update"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "agent_id": { "type": "string" },
+            "thoughts": { "type": "string" },
+            "action": {
+              "type": "object",
+              "properties": {
+                "action": { "type": "string" },
+                "target_appearance": { "type": "string" },
+                "reason": { "type": "string" }
+              }
+            },
+            "needs": {
+              "type": "object",
+              "properties": {
+                "hunger": { "type": "number" },
+                "thirst": { "type": "number" },
+                "energy": { "type": "number" }
+              }
+            }
+          },
+          "required": ["agent_id"]
+        }
+      },
+      "required": ["type", "data"]
+    },
+    "WorldUpdate": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "world_update"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "time": {
+              "type": "object",
+              "properties": {
+                "hour": { "type": "integer" },
+                "minute": { "type": "integer" },
+                "day_cycle": { "type": "number" }
+              }
+            },
+            "agents": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "position": {
+                    "type": "array",
+                    "items": { "type": "number" },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "activity": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["type", "data"]
+    }
+  }
+}

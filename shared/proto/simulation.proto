@@ -1,0 +1,153 @@
+syntax = "proto3";
+
+package simulation;
+
+// Basic types
+message Vector3 {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+}
+
+message Quaternion {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+  float w = 4;
+}
+
+// Agent-related messages
+message PhysiologicalNeeds {
+  float hunger = 1;
+  float thirst = 2;
+  float energy = 3;
+  float bladder = 4;
+  float hygiene = 5;
+  bool shelter = 6;
+}
+
+message Agent {
+  string id = 1;
+  string name = 2;
+  Vector3 position = 3;
+  Quaternion rotation = 4;
+  PhysiologicalNeeds needs = 5;
+  string current_activity = 6;
+  map<string, int32> inventory = 7;
+}
+
+// World objects
+message House {
+  string id = 1;
+  Vector3 position = 2;
+  string color = 3;
+  string owner_id = 4;
+}
+
+message Resource {
+  string id = 1;
+  string type = 2;
+  Vector3 position = 3;
+  
+  oneof resource_data {
+    LakeData lake = 4;
+    PlantData plant = 5;
+  }
+}
+
+message LakeData {
+  float radius = 1;
+}
+
+message PlantData {
+  int32 quantity = 1;
+  float nutrition = 2;
+}
+
+// World state
+message TimeInfo {
+  double timestamp = 1;
+  float day_cycle = 2;
+  int32 hour = 3;
+  int32 minute = 4;
+}
+
+message WorldState {
+  TimeInfo time = 1;
+  map<string, Agent> agents = 2;
+  map<string, House> houses = 3;
+  map<string, Resource> resources = 4;
+}
+
+// Actions
+message AgentAction {
+  string agent_id = 1;
+  
+  oneof action {
+    MoveAction move = 2;
+    InteractAction interact = 3;
+    SpeakAction speak = 4;
+    WaitAction wait = 5;
+  }
+}
+
+message MoveAction {
+  oneof target {
+    Vector3 position = 1;
+    string object_id = 2;
+    string direction = 3;
+  }
+}
+
+message InteractAction {
+  string target_id = 1;
+  string interaction_type = 2;
+}
+
+message SpeakAction {
+  string message = 1;
+  float volume = 2;
+}
+
+message WaitAction {
+  float duration = 1;
+}
+
+// Action outcome
+message ActionOutcome {
+  bool success = 1;
+  string description = 2;
+  map<string, float> need_changes = 3;
+  string discovery = 4;
+  map<string, int32> inventory_changes = 5;
+}
+
+// Service definition
+service SimulationService {
+  rpc GetWorldState(WorldStateRequest) returns (WorldStateResponse);
+  rpc ExecuteAction(AgentActionRequest) returns (AgentActionResponse);
+  rpc SubscribeToUpdates(SubscribeRequest) returns (stream WorldUpdate);
+}
+
+message WorldStateRequest {}
+
+message WorldStateResponse {
+  WorldState state = 1;
+}
+
+message AgentActionRequest {
+  AgentAction action = 1;
+}
+
+message AgentActionResponse {
+  ActionOutcome outcome = 1;
+}
+
+message SubscribeRequest {
+  repeated string agent_ids = 1;
+}
+
+message WorldUpdate {
+  string update_type = 1;
+  google.protobuf.Any data = 2;
+}

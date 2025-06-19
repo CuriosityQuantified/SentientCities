@@ -1,0 +1,40 @@
+# World Constants
+
+world:
+  size: 100  # 100x100 meters
+  gravity: -9.81
+  time_scale: 1.0  # 1.0 = real-time
+
+agents:
+  initial_count: 2
+  spawn_radius: 10
+  visual_range: 20
+  hearing_range: 15
+  
+needs:
+  hunger:
+    initial: 75.0
+    decay_rate: 1.0  # per minute
+    critical_threshold: 20.0
+  thirst:
+    initial: 75.0
+    decay_rate: 1.5  # per minute
+    critical_threshold: 20.0
+  energy:
+    initial: 90.0
+    decay_rate: 0.5  # per minute
+    critical_threshold: 15.0
+    
+resources:
+  lake:
+    radius: 5.0
+    thirst_restoration: 30.0
+  plant:
+    nutrition: 20.0
+    initial_quantity: 5
+    hunger_restoration: 20.0
+    
+houses:
+  count: 2
+  spawn_distance: 20.0
+  colors: ["red", "blue"]

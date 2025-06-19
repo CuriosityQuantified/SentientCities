@@ -1,0 +1,24 @@
+[package]
+name = "sentient-cities-engine"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.35", features = ["full"] }
+tonic = "0.10"
+prost = "0.12"
+rapier3d = "0.17"
+nalgebra = "0.32"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.6", features = ["v4", "serde"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"
+dashmap = "5.5"
+
+[build-dependencies]
+tonic-build = "0.10"
+
+[[bin]]
+name = "simulation-server"
+path = "src/main.rs"

@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  simulation-engine:
+    build:
+      context: ./simulation-engine
+      dockerfile: ../docker/rust.Dockerfile
+    ports:
+      - "${RUST_GRPC_PORT:-50051}:50051"
+    environment:
+      - RUST_LOG=${RUST_LOG:-info}
+      - WORLD_SIZE=${WORLD_SIZE:-100}
+      - PHYSICS_TICK_RATE=${PHYSICS_TICK_RATE:-60}
+    volumes:
+      - world-data:/app/data
+    networks:
+      - sentient-net
+
+  ai-orchestrator:
+    build:
+      context: ./ai-orchestrator
+      dockerfile: ../docker/python.Dockerfile
+    ports:
+      - "${PYTHON_WEBSOCKET_PORT:-8080}:8080"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - SIMULATION_ENGINE_HOST=simulation-engine:50051
+      - PYTHON_LOG_LEVEL=${PYTHON_LOG_LEVEL:-INFO}
+      - INITIAL_AGENTS=${INITIAL_AGENTS:-2}
+    depends_on:
+      - simulation-engine
+    volumes:
+      - memory-data:/app/data
+    networks:
+      - sentient-net
+
+  visualization:
+    build:
+      context: ./visualization
+      dockerfile: ../docker/node.Dockerfile
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      - REACT_APP_WS_URL=ws://localhost:${PYTHON_WEBSOCKET_PORT:-8080}
+    depends_on:
+      - ai-orchestrator
+    networks:
+      - sentient-net
+
+volumes:
+  world-data:
+  memory-data:
+
+networks:
+  sentient-net:
+    driver: bridge
